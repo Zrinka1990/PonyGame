@@ -1,0 +1,193 @@
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, user-scalable=no" />
+        <title>Pony</title>
+        <style>
+            canvas {
+                border: 1px solid black;
+                width: 100%;
+            }
+        </style>
+    </head>
+    <body>
+        <h1 id="title">Fluttershy, the Treasure Hunter level 1</h1>
+        <canvas width="640" height="340" id="myCanvas"></canvas>
+        <script>
+            /* eventListener - this event was listened to. When this event occures the
+            following function will be called (callback function).
+            anonymus function - the function called without a name
+            */
+            window.addEventListener('load', function(){
+
+                var gameWidth = 640;
+                var gameHight = 300;
+
+                var gameLive = true;
+
+                var level = 1;
+
+                var enemies = [{
+                    x: 90,
+                    y: 100,
+                    speedY: 1,
+                    w: 40,
+                    h: 40,
+                },
+                {
+                    x: 200,
+                    y: 100,
+                    speedY: 2,
+                    w: 40,
+                    h: 40,
+                },
+                {
+                    x: 340,
+                    y: 100,
+                    speedY: 3,
+                    w: 40,
+                    h: 40,
+                }, 
+                {
+                    x: 460,
+                    y: 100,
+                    speedY: 4,
+                    w: 40,
+                    h: 40,
+                }
+                ];
+
+                var pony = {
+                    x: 10,
+                    y: 160,
+                    speedX: 2,
+                    w: 40,
+                    h: 40,
+                    isMoving: false, 
+                };
+
+                var goal = {
+                    x: 580,
+                    y: 170,
+                    w: 50,
+                    h: 36,
+                };
+
+                var sprites = {};
+
+                var movePony = function() {
+                    pony.isMoving = true;
+                };
+
+                var stopPony = function() {
+                    pony.isMoving = false;
+                };
+
+                var canvas = document.getElementById("myCanvas");
+                // the ctx object is needed to draw in the canvas
+                var ctx = canvas.getContext("2d");
+                
+                //mousedown and mouseup are some of the JS's events ready to use
+                canvas.addEventListener('mousedown', movePony);
+                canvas.addEventListener('mouseup', stopPony);   
+                canvas.addEventListener('touchstart', movePony);
+                canvas.addEventListener('touchend', stopPony);
+
+                var load = function() {
+                    sprites.pony = new Image();
+                    sprites.pony.src = 'images/fluttershy2.png';
+
+                    sprites.background = new Image();
+                    sprites.background.src = 'images/background2.png';
+
+                    sprites.enemy = new Image();
+                    sprites.enemy.src = 'images/discord.png';
+
+                    sprites.goal = new Image();
+                    sprites.goal.src = 'images/chest.png';
+                };
+
+                //updates the position of rectangle
+                var update = function() {
+
+                    if (pony.isMoving) {
+                        pony.x += pony.speedX;
+                    };
+
+                    if(checkCollision(pony, goal)) {
+                        alert('You\'ve finished level ' + level + '!');
+                        level++;
+                        var titleElem = document.getElementById("title");
+                        titleElem.innerHTML = "Fluttershy, the Treasure Huntter, Level " + level;
+                        enemies.forEach(function(enemy, index) {
+                            enemy.speedY += enemy.speedY / Math.abs(enemy.speedY);
+                        });
+                        pony.x = 10;
+                        stopPony();
+                    }
+
+                    enemies.forEach(function(enemy, index){
+
+                        if(checkCollision(pony, enemy)) {
+                            //stop the game
+                            gameLive = false;
+                            alert("Game Over!");
+                            //reload
+                            window.location = "";
+                        }
+
+                        enemy.y += enemy.speedY;
+
+                        if (enemy.y <= 5) {
+                            enemy.y = 5;
+                            enemy.speedY *= -1;
+                        } else if (enemy.y >= gameHight - 40) {
+                            enemy.y = gameHight - 40;
+                            enemy.speedY *= -1;
+                        };
+                    });
+                };
+
+                var draw = function() {
+                    //the canvas is cleaned and drawn again multiple times
+                    ctx.clearRect(0, 0, gameWidth, gameHight);
+                    
+                    ctx.drawImage(sprites.background, 0, 0);
+
+                    ctx.drawImage(sprites.pony, pony.x, pony.y);
+
+                    enemies.forEach(function(enemy, index){
+                        ctx.drawImage(sprites.enemy, enemy.x, enemy.y);
+                    });
+
+                    ctx.drawImage(sprites.goal, goal.x, goal.y);
+                };
+
+                /*This method is called many times per second. Every time the method runs,
+                the new position is calculated and the rectangle is drwn agin.*/
+                var step = function() {
+
+                    update();
+                    draw();
+                    /* method tells the browser that you wish to perform an animation and requests
+                    that the browser call a specified function to update an animation before the next
+                    repaint Step is called again.*/
+
+                    if (gameLive) {
+                        window.requestAnimationFrame(step);
+                    };
+                };
+
+                var checkCollision = function(rect1, rect2) {
+                    return rect1.x < rect2.x + rect2.w && 
+                            rect1.x + rect1.w > rect2.x && 
+                            rect1.y < rect2.y + rect2.h && 
+                            rect1.y + rect1.h > rect2.y;
+                };
+
+                load();
+                // step method is called for the first time
+                step();
+            });
+        </script> 
+    </body>
+</html>
