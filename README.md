@@ -1,5 +1,4 @@
 # PonyGame
 A simple game made using JavaScript
 #
-![Alt text](/images/screenshot.jpg?raw=true "Optional Title")
-
+![Alt text](/images/screenshot.PNG?raw=true "Optional Title")
