@@ -13,11 +13,8 @@
         <h1 id="title">Fluttershy, the Treasure Hunter level 1</h1>
         <canvas width="640" height="340" id="myCanvas"></canvas>
         <script>
-            /* eventListener - this event was listened to. When this event occures the
-            following function will be called (callback function).
-            anonymus function - the function called without a name
-            */
-            window.addEventListener('load', function(){
+            //when this event occures the following functions will be called (callback functions)
+            window.addEventListener('load', function() {
 
                 var gameWidth = 640;
                 var gameHight = 300;
@@ -86,7 +83,6 @@
                 // the ctx object is needed to draw in the canvas
                 var ctx = canvas.getContext("2d");
                 
-                //mousedown and mouseup are some of the JS's events ready to use
                 canvas.addEventListener('mousedown', movePony);
                 canvas.addEventListener('mouseup', stopPony);   
                 canvas.addEventListener('touchstart', movePony);
@@ -94,10 +90,10 @@
 
                 var load = function() {
                     sprites.pony = new Image();
-                    sprites.pony.src = 'images/fluttershy2.png';
+                    sprites.pony.src = 'images/fluttershy.png';
 
                     sprites.background = new Image();
-                    sprites.background.src = 'images/background2.png';
+                    sprites.background.src = 'images/background.png';
 
                     sprites.enemy = new Image();
                     sprites.enemy.src = 'images/discord.png';
@@ -106,7 +102,7 @@
                     sprites.goal.src = 'images/chest.png';
                 };
 
-                //updates the position of rectangle
+                //updates the positions of rectangles
                 var update = function() {
 
                     if (pony.isMoving) {
@@ -148,7 +144,7 @@
                 };
 
                 var draw = function() {
-                    //the canvas is cleaned and drawn again multiple times
+                    //the canvas is cleaned and drawn on again multiple times per second
                     ctx.clearRect(0, 0, gameWidth, gameHight);
                     
                     ctx.drawImage(sprites.background, 0, 0);
@@ -163,14 +159,11 @@
                 };
 
                 /*This method is called many times per second. Every time the method runs,
-                the new position is calculated and the rectangle is drwn agin.*/
+                the new position is calculated and the rectangles are drwn agin.*/
                 var step = function() {
 
                     update();
                     draw();
-                    /* method tells the browser that you wish to perform an animation and requests
-                    that the browser call a specified function to update an animation before the next
-                    repaint Step is called again.*/
 
                     if (gameLive) {
                         window.requestAnimationFrame(step);
